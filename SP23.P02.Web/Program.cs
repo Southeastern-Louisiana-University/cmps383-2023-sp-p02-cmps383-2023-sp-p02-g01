@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
 
@@ -9,6 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<DataContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")));
 
 builder.Services.AddControllers();
+builder.Services.AddIdentity<User,Role>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<DataContext>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,6 +33,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthorization();
 app.UseAuthorization();
 
 app.MapControllers();
