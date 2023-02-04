@@ -32,6 +32,28 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
+app.UseRouting();
+
+app.UseAuthorization();
+
+app.UseEndpoints(routeBuilder =>
+{
+    routeBuilder.MapControllers();
+
+});
+
+app.UseStaticFiles();
+app.UseSpa(spaBuilder =>
+{
+    spaBuilder.Options.SourcePath = "my-app";
+    if (app.Environment.IsDevelopment())
+
+    {
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000/");
+
+    }
+
+});
 app.MapControllers();
 
 app.Run();
