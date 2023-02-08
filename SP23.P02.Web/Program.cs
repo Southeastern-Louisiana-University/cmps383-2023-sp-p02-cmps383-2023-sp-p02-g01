@@ -19,12 +19,20 @@ builder.Services.AddSwaggerGen();
 builder.Services.ConfigureApplicationCookie(options =>
 {
     // Cookie settings
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(10);
-
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.SlidingExpiration = true;
+    options.Events.OnRedirectToLogin = content =>
+    {
+        //401 Unauthorized response status code indicates that the client request has not been
+        //completed because it lacks valid authentication credentials for the requested resource.
+        content.Response.StatusCode = 401;
+        return Task.CompletedTask;
+    };
+    options.Events.OnRedirectToAccessDenied = content =>
+    {
+        //The HTTP 403 Forbidden response status code indicates that the server
+        //understands the request but refuses to authorize it
+        content.Response.StatusCode = 403;
+        return Task.CompletedTask;
+    };
 });
 
 var app = builder.Build();
@@ -32,7 +40,9 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<DataContext>();
-    await SeedHelper.MigrateAndSeed(db);
+    var services = scope.ServiceProvider;
+
+    await SeedHelper.MigrateAndSeed(db, services);
 }
 
 // Configure the HTTP request pipeline.
@@ -52,5 +62,6 @@ app.MapControllers();
 app.Run();
 
 //see: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0
-// Hi 383 - this is added so we can test our web project automatically. More on that later
+// Hi 383 - this is added so we can test our
+// web project automatically. More on that later
 public partial class Program { }
