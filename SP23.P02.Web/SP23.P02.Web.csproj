@@ -4,9 +4,20 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	  <ImplicitUsings>enable</ImplicitUsings>
+	  <SpaRoot>ClientApp\</SpaRoot>
   </PropertyGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<!-- Don't publish the SPA source files, but do show them in the project files list -->
+		<Content Remove="$(SpaRoot)**" />
+		<None Remove="$(SpaRoot)**" />
+		<None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+	</ItemGroup>
+	
+	
+	
+	<ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.2">
@@ -15,16 +26,13 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
-
-	<ItemGroup>
-		<!-- Don't publish the SPA source files, but do show them in the project files list -->
-		<Content Remove="$(SpaRoot)**" />
-	</ItemGroup>
-
+	
+	
 	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+		<!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+		<Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
 
-		<SpaRoot>my-app</SpaRoot>
-		
 		<!-- Include the newly-built files in the publish output -->
 		<ItemGroup>
 			<DistFiles Include="$(SpaRoot)build\**" />
@@ -35,5 +43,4 @@
 			</ResolvedFileToPublish>
 		</ItemGroup>
 	</Target>
-
 </Project>

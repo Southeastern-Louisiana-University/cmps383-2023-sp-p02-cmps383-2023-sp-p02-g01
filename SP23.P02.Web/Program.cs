@@ -30,12 +30,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+
 app.UseAuthorization();
+
 
 app.UseRouting();
-
 app.UseAuthorization();
-
 app.UseEndpoints(routeBuilder =>
 {
     routeBuilder.MapControllers();
@@ -45,7 +45,7 @@ app.UseEndpoints(routeBuilder =>
 app.UseStaticFiles();
 app.UseSpa(spaBuilder =>
 {
-    spaBuilder.Options.SourcePath = "my-app";
+    spaBuilder.Options.SourcePath = "ClientApp";
     if (app.Environment.IsDevelopment())
 
     {
@@ -54,7 +54,7 @@ app.UseSpa(spaBuilder =>
     }
 
 });
-app.MapControllers();
+
 
 app.Run();
 
