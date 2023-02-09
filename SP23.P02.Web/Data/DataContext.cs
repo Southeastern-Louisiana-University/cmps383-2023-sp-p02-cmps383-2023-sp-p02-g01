@@ -1,11 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using SP23.P02.Web.Features.Authorization;
+using SP23.P02.Web.Features.Roles;
+using SP23.P02.Web.Features.Users;
 using static System.Net.Mime.MediaTypeNames;
+
 namespace SP23.P02.Web.Data;
 
-public class DataContext : IdentityDbContext<User, Role, int, 
-    IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
+public class DataContext : IdentityDbContext
+    <User, Role, int, 
+    IdentityUserClaim<int>, 
+    UserRole, 
+    IdentityUserLogin<int>, 
+    IdentityRoleClaim<int>, 
+    IdentityUserToken<int>>
 {
 
     public DataContext(DbContextOptions<DataContext> options) : base(options)
