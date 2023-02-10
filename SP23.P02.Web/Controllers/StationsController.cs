@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
 using SP23.P02.Web.Features.Roles;
 using SP23.P02.Web.Features.TrainStations;
+using SP23.P02.Web.Features.Users;
 
 namespace SP23.P02.Web.Controllers;
 
@@ -54,6 +55,7 @@ public class StationsController : ControllerBase
         {
             Name = dto.Name,
             Address = dto.Address,
+            Manager = dataContext.Users.FirstOrDefault(x => x.Id == dto.ManagerId)
         };
         stations.Add(station);
 
@@ -82,6 +84,7 @@ public class StationsController : ControllerBase
 
         station.Name = dto.Name;
         station.Address = dto.Address;
+        station.Manager = dataContext.Users.FirstOrDefault(x => x.Id == dto.ManagerId);
 
         dataContext.SaveChanges();
 
@@ -123,6 +126,7 @@ public class StationsController : ControllerBase
                 Id = x.Id,
                 Name = x.Name,
                 Address = x.Address,
-            });
+                ManagerId = x.Manager.Id
+    });
     }
 }
