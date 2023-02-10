@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
+using SP23.P02.Web.Features.Authorization;
 using SP23.P02.Web.Features.Roles;
 using SP23.P02.Web.Features.TrainStations;
 using SP23.P02.Web.Features.Users;
@@ -67,34 +68,44 @@ public class StationsController : ControllerBase
     }
 
     [HttpPut]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize]
     [Route("{id}")]
     public ActionResult<TrainStationDto> UpdateStation(int id, TrainStationDto dto)
     {
-        if (IsInvalid(dto))
-        {
-            return BadRequest();
-        }
-
-        var station = stations.FirstOrDefault(x => x.Id == id);
+        int? userId = User.GetCurrentUserId();
+        var station = stations.Include(x => x.Manager).FirstOrDefault(x => x.Id == id);
         if (station == null)
         {
             return NotFound();
         }
 
-        station.Name = dto.Name;
-        station.Address = dto.Address;
-        station.Manager = dataContext.Users.FirstOrDefault(x => x.Id == dto.ManagerId);
+        if (User.IsInRole("Admin") || station.Manager.Id == User.GetCurrentUserId()) 
+        {         
+                if (IsInvalid(dto))
+                {
+                    return BadRequest();
+                }
 
-        dataContext.SaveChanges();
+                if (station == null)
+                {
+                    return NotFound();
+                }
 
-        dto.Id = station.Id;
+                station.Name = dto.Name;
+                station.Address = dto.Address;
+                station.Manager = dataContext.Users.FirstOrDefault(x => x.Id == dto.ManagerId);
 
-        return Ok(dto);
+                dataContext.SaveChanges();
+
+                dto.Id = station.Id;
+
+                return Ok(dto);
+            }    
+        return Forbid();
     }
 
     [HttpDelete]
-    [Authorize(Roles = Role.Admin)]
+    [Authorize(Roles = Role.Admin )]
     [Route("{id}")]
     public ActionResult DeleteStation(int id)
     {
