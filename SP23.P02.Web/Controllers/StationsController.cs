@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SP23.P02.Web.Data;
+using SP23.P02.Web.Features.Roles;
 using SP23.P02.Web.Features.TrainStations;
 
 namespace SP23.P02.Web.Controllers;
@@ -19,12 +21,14 @@ public class StationsController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public IQueryable<TrainStationDto> GetAllStations()
     {
         return GetTrainStationDtos(stations);
     }
 
     [HttpGet]
+    [AllowAnonymous]
     [Route("{id}")]
     public ActionResult<TrainStationDto> GetStationById(int id)
     {
@@ -38,6 +42,7 @@ public class StationsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = Role.Admin)]
     public ActionResult<TrainStationDto> CreateStation(TrainStationDto dto)
     {
         if (IsInvalid(dto))
@@ -60,6 +65,7 @@ public class StationsController : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = Role.Admin)]
     [Route("{id}")]
     public ActionResult<TrainStationDto> UpdateStation(int id, TrainStationDto dto)
     {
@@ -85,6 +91,7 @@ public class StationsController : ControllerBase
     }
 
     [HttpDelete]
+    [Authorize(Roles = Role.Admin)]
     [Route("{id}")]
     public ActionResult DeleteStation(int id)
     {
