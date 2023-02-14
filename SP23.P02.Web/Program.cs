@@ -87,10 +87,32 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-app.UseAuthorization();
 
-app.MapControllers();
+app.UseAuthentication();
+
+
+
+app.UseRouting();
+app.UseAuthorization();
+app.UseEndpoints(routeBuilder =>
+{
+    routeBuilder.MapControllers();
+
+});
+
+app.UseStaticFiles();
+app.UseSpa(spaBuilder =>
+{
+    spaBuilder.Options.SourcePath = "ClientApp";
+    if (app.Environment.IsDevelopment())
+
+    {
+        spaBuilder.UseProxyToSpaDevelopmentServer("https://localhost:3000/");
+
+    }
+
+});
+
 
 app.Run();
 
