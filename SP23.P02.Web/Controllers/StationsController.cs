@@ -23,7 +23,7 @@ public class StationsController : ControllerBase
     }
 
     [HttpGet]
-    [AllowAnonymous]
+    
     public IQueryable<TrainStationDto> GetAllStations()
     {
         return GetTrainStationDtos(stations);
